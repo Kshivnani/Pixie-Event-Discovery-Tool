@@ -1,1 +1,27 @@
+name: Daily Pixie Update
 
+on:
+  schedule:
+    - cron: '0 0 * * *' # Yeh roz raat 12 baje apne aap chalega
+  workflow_dispatch: # Isse aap manual "Run" button daba sakte hain
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4 gspread oauth2client
+
+      - name: Run scraper
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }} # Yeh secret se credentials lega
+        run: python scraper.py
